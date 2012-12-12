@@ -13,14 +13,24 @@ import javax.swing.JToolBar;
 import javax.swing.JTextArea;
 import java.awt.Panel;
 import javax.swing.JLabel;
+
+import com.ib.client.EClientSocket;
+import com.ib.client.EWrapper;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import javax.swing.ScrollPaneConstants;
 
 public class Nick_IB_Gui {
-
+        
     private JFrame frame;
-
+    private NickWrapper nwrapper;
+    private String retIpAddress;
+    private int retPort ;
+    private int retClientId ;
+    
     /**
      * Launch the application.
      */
@@ -42,49 +52,54 @@ public class Nick_IB_Gui {
      */
     public Nick_IB_Gui() {
         initialize();
+      
     }
 
     /**
      * Initialize the contents of the frame.
      */
     private void initialize() {
+        nwrapper = new NickWrapper();
+        
         frame = new JFrame();
         frame.setBounds(100, 100, 583, 494);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         
-        JLabel lblIbApiGui = new JLabel("IB API Gui");
+        final JLabel lblIbApiGui = new JLabel("IB API Gui");
         lblIbApiGui.setFont(new Font("Lucida Grande", Font.BOLD, 14));
         lblIbApiGui.setBounds(6, 6, 95, 16);
         frame.getContentPane().add(lblIbApiGui);
         
-        JLabel lblMessages = new JLabel("Messages");
+        final JLabel lblMessages = new JLabel("Messages");
         lblMessages.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblMessages.setBounds(6, 41, 95, 16);
         frame.getContentPane().add(lblMessages);
         
-        JTextArea textArea1 = new JTextArea();
+        final JTextArea textArea1 = new JTextArea();
         textArea1.setRows(5);
         textArea1.setLineWrap(true);
         textArea1.setWrapStyleWord(true);
         textArea1.setBounds(6, 69, 533, 96);
         frame.getContentPane().add(textArea1);
         
-        JLabel lblConsole = new JLabel("Console");
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBounds(6, 205, 533, 96);
+        frame.getContentPane().add(scrollPane);
+        final JTextArea textArea = new JTextArea();
+        textArea.setRows(5);
+        scrollPane.setRowHeaderView(textArea);
+        
+        final JLabel lblConsole = new JLabel("Console");
         lblConsole.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         lblConsole.setBounds(6, 177, 61, 16);
         frame.getContentPane().add(lblConsole);
         
-        JTextArea textArea = new JTextArea();
-        textArea.setWrapStyleWord(true);
-        textArea.setRows(5);
-        textArea.setLineWrap(true);
-        textArea.setBounds(6, 205, 533, 96);
-        frame.getContentPane().add(textArea);
-        
         JButton btnConnect = new JButton("Connect");
         btnConnect.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                onConnect(textArea);
             }
         });
         btnConnect.setBounds(6, 313, 117, 29);
@@ -93,9 +108,29 @@ public class Nick_IB_Gui {
         JButton btnDisconnect = new JButton("Disconnect");
         btnDisconnect.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                onDisconnect(textArea);
             }
         });
         btnDisconnect.setBounds(6, 354, 117, 29);
         frame.getContentPane().add(btnDisconnect);
+    
+       
+    }
+    
+    private void onConnect(JTextArea mytextArea) {
+        //mytextArea.append("\nConnect BUTTON WAS PUSHED");
+        retIpAddress = "";
+        retPort = 7496;
+        retClientId = 0;
+        nwrapper.m_client.eConnect( retIpAddress, retPort, retClientId);
+        if (nwrapper.m_client.isConnected()) {
+            mytextArea.append("Connected to Tws server version " +
+                       nwrapper.m_client.serverVersion() + " at " +
+                       nwrapper.m_client.TwsConnectionTime());
+        }
+    }
+    
+    private void onDisconnect(JTextArea mytextArea) {
+        mytextArea.append("\nDisconnect BUTTON WAS PUSHED");
     }
 }
