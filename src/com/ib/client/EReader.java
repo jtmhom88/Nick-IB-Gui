@@ -796,7 +796,7 @@ public class EReader extends Thread {
             case MANAGED_ACCTS: {
                 int version = readInt();
                 String accountsList = readStr();
-
+                System.out.println("Accounts List fetched: " + accountsList);
                 eWrapper().managedAccounts( accountsList);
                 break;
             }

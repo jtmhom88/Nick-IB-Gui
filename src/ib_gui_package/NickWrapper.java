@@ -10,6 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -941,11 +945,38 @@ class NickWrapper implements EWrapper {
         String msg = EWrapperMsgGenerator.managedAccounts(accountsList);
         // m_TWS.add( msg);
         // Set account list 
+        // JTH get the account list
         String[] tokens = accountsList.split(",");
-        for (int i = 0; i < tokens.length; i++)
+        System.out.println("JTH All Managed Accounts: ");
+        int i;
+        for (i = 0; i < tokens.length; i++) {
             GlobalVars.allAccounts.add(tokens[i]);
+            System.out.println(tokens[i]);  
+        }
+        System.out.println("JTH Number of Accounts: " + i);
+        writeAccounts();
     }
-
+    
+    public void writeAccounts () {
+        // if file doesnt exists, then create it
+        try {
+            File file = new File(GlobalVars.acctfname);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            String content = "";
+            for (String s : GlobalVars.allAccounts) {
+               content += s + "\n";
+            }
+            bw.write(content);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void historicalData(int reqId, String date, double open, double high, double low,
                                double close, int volume, int count, double WAP, boolean hasGaps) {
         String msg = EWrapperMsgGenerator.historicalData(reqId, date, open, high, low, close, volume, count, WAP, hasGaps);

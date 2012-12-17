@@ -1,6 +1,7 @@
 package ib_gui_package;
 
 import java.util.ArrayList; 
+import java.io.*;
 
 public class GlobalVars {
     

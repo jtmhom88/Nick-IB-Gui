@@ -113,6 +113,15 @@ public class Nick_IB_Gui {
         });
         btnDisconnect.setBounds(6, 354, 117, 29);
         frame.getContentPane().add(btnDisconnect);
+        
+        JButton btnReqAcctButton = new JButton("Req Accounts");
+        btnReqAcctButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                onReqAcct(textArea);
+            }
+        });
+        btnReqAcctButton.setBounds(126, 313, 117, 29);
+        frame.getContentPane().add(btnReqAcctButton);
     
        
     }
@@ -132,5 +141,13 @@ public class Nick_IB_Gui {
     
     private void onDisconnect(JTextArea mytextArea) {
         mytextArea.append("\nDisconnect BUTTON WAS PUSHED");
+    }
+    
+    private void onReqAcct(JTextArea mytextArea) {
+        String allAccounts="";
+        //mytextArea.append("\nConnect BUTTON WAS PUSHED");
+        nwrapper.m_client.reqManagedAccts();
+        // JTH no need to explicitly call 
+        // nwrapper.managedAccounts(allAccounts);
     }
 }
